@@ -4,12 +4,15 @@ on: [push]
 
 jobs:
   build:
+    runs-on: akkyie/thesis
 
-    runs-on: ubuntu-latest
-    
     steps:
     - uses: actions/checkout@v1
-    - name: test
+    - name: build
+      run: make build
+    - name: redpen
+      run: make -j2 redpen || true
+    - name: release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: sh release.sh
+      run: .github/workflows/release.sh
