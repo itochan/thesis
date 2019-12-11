@@ -1,0 +1,286 @@
+\chapter{実装}
+\label{chap:implementation}
+
+本研究では、\ref{chap:design}章で示した設計の実現可能性を評価するため、WebAssemblyプログラムの実行部分に着目し、C言語によりWebAssemblyインタプリタを実装した。
+また、ESP32上、PC上およびWebブラウザ上でこのWebAssemblyインタプリタを用いてWebAssemblyプログラムを実行し、実行性能を計測するためのホストプログラムを、環境ごとにそれぞれ実装した。
+
+本章では、WebAssemblyインタプリタにおけるWebAssemblyバイナリの実装と、各環境に実装したホストプログラムの実装について述べる。
+
+\section{実装の全体}
+
+本実装の全体像を図\ref{fig:eval_envs}に示す。
+本実装は、C言語で実装したWebAssemblyバイナリのインタプリタ（libwasm）と、libwasmが提供する機能を呼び出し実行性能を計測するプログラム（ホストプログラム）より構成される。
+HTTPサーバとの通信部分は実装せず、実行するWebAssemblyバイナリは静的にホストプログラムに埋め込んだ。
+
+ホストプログラムは、libwasmを用いてWebAssemblyバイナリが定義するモジュールを読み込み、モジュールが持つ関数を呼び出し、実行時間およびメモリフットプリントを計測する。
+
+なお、実装の簡便のため、モジュールの検証は実装しなかった。
+また、設計上複数モジュールの実行は想定していないため、インポートおよびエクスポートに関する機能は実装しなかった。
+命令セットについては、仕様が定義する172命令のうち、\ref{chap:evaluation}章で述べる検証用プログラムの実行に必要な16命令のみを実装した。
+
+\begin{figure}[htbp]
+  \caption{本実装の全体図}
+  \label{fig:eval_envs}
+  \begin{center}
+    \includegraphics[bb=0 0 933 297,width=15cm]{img/eval_envs.pdf}
+  \end{center}
+\end{figure}
+
+\section{WebAssembly実行環境}
+
+WebAssembly Core Specification\cite{wasm_spec}により規定された仕様を基に、WebAssemblyインタプリタをライブラリ「libwasm」としてC言語により実装した。
+libwasmはC11により標準化された仕様のみを用いてプラットフォーム非依存な形で実装したため、ESP32以外のマイコンにも容易に移植可能である。
+
+libwasmは、主に以下の三つの機能を提供する:
+
+\begin{itemize}
+  \item バイナリをWebAssemblyモジュールとしてパースする
+  \item パースして得られたWebAssemblyモジュールを実行可能な形式にインスタンス化する
+  \item インスタンス化したモジュールが持つ関数を呼び出し、結果を得る
+\end{itemize}
+
+libwasmの動作概観を\ref{fig:libwasm_arch}に示す。
+
+\begin{figure}[htbp]
+  \caption{libwasmの動作概観}
+  \label{fig:libwasm_arch}
+  \begin{center}
+    \includegraphics[bb=0 0 915 667,width=15cm]{img/libwasm_arch.pdf}
+  \end{center}
+\end{figure}
+
+\subsection{パース}
+
+\subsubsection{モジュール}
+
+\verb|wasm_parse_module|関数は、バイト列として表現されたWebAssemblyバイナリを再帰下降構文解析によりパースし、\verb|wasm_module_t|構造体として表現されたWebAssemblyモジュールを生成する。
+
+WebAssemblyバイナリは、4バイトのマジックナンバー{\tt 0x00 0x61 0x73 0x6D}（\verb*| asm|）、4バイトのバージョン番号、そして連続した{\bf セクション}の列として表現される。
+\verb|wasm_parse_module|関数は、マジックナンバーおよびバージョン番号（本実装では定数{\tt 0x01 0x00 0x00 0x00}）を解釈した後、各セクションをパースする。
+
+\begin{figure}[htbp]
+  \caption{モジュールの構成}
+  \label{fig:wasm_module}
+  \begin{center}
+    \includegraphics[bb=0 0 213 344,width=4cm]{img/wasm_module.pdf}
+  \end{center}
+\end{figure}
+
+\subsubsection{セクション}
+
+WebAssemblyモジュールは、10種の{\bf 定義済みセクション}と、コンパイラやユーザが自由に用途を決められる{\bf カスタムセクション}を持つ。
+各セクションはIDを持ち、10種の定義済みセクションはそれぞれ一つのモジュール内で一度のみ、IDが昇順になる順番で現れる。
+ただし、カスタムセクションは数および場所を問わず現れることができる。
+
+% セクションの一覧を表\ref{tb:wasm_sections}に示す。
+
+% \begin{table}[htbp]
+%   \begin{center}
+%     \caption{WebAssemblyモジュールにおけるセクションの一覧}
+%     \label{tb:wasm_sections}
+%     \begin{tabular}{|c|l|l|}
+%       \hline
+%       セクションID & セクションの種類 \\\hline\hline
+%       0 & カスタムセクション \\\hline
+%       1 & 型セクション \\\hline
+%       2 & インポートセクション \\\hline
+%       3 & 関数セクション \\\hline
+%       4 & テーブルセクション \\\hline
+%       5 & メモリセクション \\\hline
+%       6 & グローバルセクション \\\hline
+%       7 & エクスポートセクション \\\hline
+%       8 & 開始セクション \\\hline
+%       9 & エレメントセクション \\\hline
+%       10 & コードセクション \\\hline
+%       11 & データセクション \\\hline
+%     \end{tabular}
+%   \end{center}
+% \end{table}
+
+各セクションは、セクションIDとセクションのバイト数から始まり、それぞれのセクション固有の情報が続く。\verb|wasm_parse_module|関数は、セクションの先頭のIDを読み、それぞれのセクションをパースする関数（\verb|wasm_parse_custom_section|、\verb|wasm_parse_type_section|など）を呼び出す。
+
+
+\begin{figure}[htbp]
+  \caption{セクションの構成}
+  \label{fig:wasm_section}
+  \begin{center}
+    \includegraphics[bb=0 0 213 344,width=4cm]{img/wasm_section.pdf}
+  \end{center}
+\end{figure}
+
+\subsubsection{値}
+
+整数は、{\bf LEB128}により表現される。LEB128はデバッグファイルフォーマットのDWARFでも用いられている\cite{dwarf}整数の可変長バイナリ表現であり、値が小さい場合に効率的に表現できる。
+
+浮動小数点数はIEEE 754-2008\cite{ieee754}に従い、リトルエンディアンで表現される。
+
+LEB128で表現された整数、IEEE 754に従って表現された浮動小数点数のそれぞれについて、パーサを実装した。
+
+% \subsubsection{型}
+
+% WebAssemblyは32ビットおよび64ビット整数、32ビットおよび64ビット浮動小数点数の4種類の型が用意されている。
+
+% \subsubsection{コード}
+
+\subsection{インスタンス化}
+
+\verb|wasm_parse_module|関数により得られたモジュールは、WebAssemblyプログラムの情報を格納したものであり、プログラムの実体ではない。
+そこで、モジュールを実行可能な形式に実体化するために、モジュールの{\bf インスタンス化}を行う必要がある。
+
+モジュールをインスタンス化することにより、モジュールの関数セクション、テーブルセクション、メモリ、グローバルの情報に基づいて、それぞれ関数インスタンス、テーブルインスタンス、メモリインスタンス、グローバルインスタンスが作成される。
+
+各インスタンスは、\verb|wasm_store_t|構造体で表現されるストアに格納される（{\bf アロケーション}）。
+同じストアを用いて複数のモジュールをインスタンス化することも可能であり、各インスタンスは全てのモジュールの中で一意な整数のアドレスが付与される。
+\verb|wasm_allocate_module|関数が最終的に返す\verb|wasm_module_instance_t|は、各インスタンスのアドレスのリストのみを持つ。
+
+\subsubsection{関数インスタンス}
+
+\verb|wasm_function_instance_t|構造体で表現される関数インスタンスは、関数の型、実行内容を表す命令列（{\bf コード}）、およびその関数が定義されているモジュールインスタンスへの参照を持つ。
+
+\subsubsection{テーブルインスタンス}
+
+\verb|wasm_table_instance_t|構造体で表現されるテーブルインスタンスは、関数アドレスのリストを持つ。
+
+\subsubsection{メモリインスタンス}
+
+\verb|wasm_memory_instance_t|構造体で表現されるメモリインスタンスは、バイト単位でアクセス可能なデータ領域を8ビット整数の配列として持つ。また、必要に応じてデータ領域の最大サイズを持つ。
+
+\subsubsection{グローバルインスタンス}
+
+\verb|wasm_global_instance_t|構造体で表現されるグローバルインスタンスは、グローバル変数として用いられる値のリストを持つ。
+
+テーブルインスタンス、メモリインスタンスおよびグローバルインスタンスは、それぞれモジュールのエレメントセクション、データセクション、グローバルセクションで指定された値によって初期化される。
+
+モジュールに格納された各情報に対応した全てのインスタンスがストアにアロケートされた後、モジュールに開始セクションがある場合は、開始セクションにより指定された関数がエントリーポイントとして呼び出される。
+
+\subsection{スタック}
+
+WebAssemblyにおける関数の実行は、全ての命令が\verb|wasm_stack_t|構造体で表現される{\bf スタック}を対象するスタックマシンとして定義されている。
+スタックには、命令のオペランドとなる値、ループ命令や分岐命令といった制御命令の対象となる{\bf ラベル}、関数の呼び出しおよびリターン時に用いられる{\bf フレーム}（または{\bf アクティベーション}）が要素として格納される。
+
+WebAssemblyにおけるスタックはプッシュおよびポップ以外の操作で変更されることはなく、値が参照されるのは先頭の要素のみであるため、連続したメモリ空間に配置する必要がない。そのため、本実装では線形リストとして実装した。
+
+\subsubsection{値}
+値は\verb|wasm_value_t|構造体で定義される。
+
+型情報（i32,i64,f32,f64）と実際の値を持つ。
+
+\subsubsection{ラベル}
+\verb|wasm_label_t|構造体。
+
+arityと継続（continuation）を持つ。
+
+\subsubsection{フレーム}
+\verb|wasm_frame_t|構造体。
+
+arity、ローカル変数のリスト、モジュールインスタンスへの参照を持つ。
+
+\subsection{モジュール外部からの関数呼び出し}
+
+モジュールのインスタンス化が完了した後、関数インスタンスに対応するアドレスを指定することで該当する関数を呼び出すことができる。
+
+モジュールインスタンスの関数を呼び出す際は、\verb|wasm_invoke|関数にストア、スタック、モジュールインスタンス、関数アドレス、引数となる値をリストとして与える。\verb|wasm_invoke|関数は、与えられた引数のリストが含む値を全てスタックにプッシュした後、モジュール内部からの呼び出しとして関数を実行する。
+
+\subsection{モジュール内部からの関数呼び出し}
+
+関数が呼び出された際、関数が引数として取る値の数だけスタックから値をポップし、これらの値を持ったフレームを作成する。このフレームをスタックにプッシュしたのち、関数が持つコードを\verb|block|命令として実行する。
+
+\subsection{各命令の実行}
+
+\subsubsection{{\tt block} 命令、 {\tt loop} 命令}
+
+引数として命令のリストを持ち、ブロックの実行を始める。
+
+スタックにフレームを積んだ後、命令列を順番に実行する。
+
+スタックに積むフレームは、継続として、\verb|block|命令の場合は空、\verb|loop|命令の場合はループの内容を持つ。
+
+\subsubsection{{\tt br} 命令、 {\tt br\_if} 命令}
+
+引数として対応するラベルのインデックス$l$を持つ。
+
+\verb|br|命令の場合は必ず、\verb|br_if|命令の場合はスタックの先頭が0でない場合、$l$番目のラベルに対応するブロックを抜ける。
+
+\subsubsection{{\tt call} 命令}
+
+関数を呼び出す。
+
+\subsubsection{{\tt local.get} 命令、 {\tt local.set} 命令、 {\tt local.tee} 命令}
+
+ローカル変数をスタックに積む、スタックの先頭の値をポップしてローカル変数に設定する、またはスタックに残したままローカル変数に設定する。
+
+\subsubsection{$t$.{\tt const} 命令}
+
+型$t$の定数を値としてスタックに積む。
+
+\subsubsection{{\tt iadd} 命令}
+
+スタックの先頭から二つの整数をポップし、加算した結果をスタックに積む。
+
+\subsubsection{{\tt ilt\_s} 命令}
+
+スタックの先頭から二つの整数をポップし、比較した結果をスタックに積む。
+
+\section{ホストプログラム}
+
+\subsection{ESP32環境}
+
+ESP32における実装環境を表\ref{tab:esp_spec}に示す。
+
+\begin{table}[htbp]
+  \label{tab:esp_spec}
+  \caption{ESP32環境の構成}
+  \begin{center}
+    \begin{tabular}{|l|l|}
+    \hline
+    ハードウェア & ESP32-WROOM-32 \\ \hline
+    プロセッサ & Tensilica Xtensa LX6 (240MHz, dual-core) \\ \hline
+    OS & ESP-IDF FreeRTOS v3.3-beta1-223-ga62cbfec9 \\ \hline
+    コンパイラ & GCC 5.2.0 (crosstool-NG 1.22.0-80-g6c4433a) \\ \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+実行速度は、ESP-IDFが提供する\verb|esp_timer_get_time|関数を用いて計測した。
+ESP-IDFを用いてコンパイルされたプログラムは、起動後\verb|esp_timer_init|関数を自動的に呼び出し、タイマーを初期化する。
+\verb|esp_timer_get_time|関数は、このタイマーが初期化されてからの経過時間をマイクロ秒単位で返す。
+WebAssemblyモジュールの関数を実行する直前および実行直後に\verb|esp_timer_get_time|関数を呼び出し、差分を実行時間とした。
+
+また、メモリフットプリントの計測には、FreeRTOSがAPIとして提供する \\
+\verb|xPortGetMinimumEverFreeHeapSize|関数を用いた。
+この関数は、起動以降一度も確保されていないヒープ領域の最小のサイズを返す。
+すなわち、この値の減少分が、処理に必要なメモリフットプリントの増加分と言える。
+そこで、WebAssemblyモジュールの関数を実行する直前と直後での差分を取り、関数実行におけるメモリフットプリントとした。
+
+\subsection{macOS環境}
+
+ESP32に対するPC環境として、表\ref{tab:mac_spec}に示す環境にホストプログラムを実装した。
+
+\begin{table}[htbp]
+  \label{tab:mac_spec}
+  \caption{macOS環境の構成}
+  \begin{center}
+    \begin{tabular}{|l|l|}
+    \hline
+    ハードウェア & Mac mini (2018) \\ \hline
+    プロセッサ & Intel Core i5 (3 GHz, 6 cores) \\ \hline
+    OS & macOS 10.14.1 \\ \hline
+    コンパイラ & Apple LLVM version 10.0.0 (clang-1000.11.45.5) \\ \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+実行速度の計測には、OSが提供する\verb|clock_gettime|関数を用いた。
+クロックの種別には \\
+\verb|CLOCK_MONOTONIC|を指定し、時刻設定に関わらず単調増加する時間をナノ秒精度で取得した。
+
+\subsection{JIT環境（Webブラウザ）}
+
+macOS環境と同じOSおよびハードウェア上で、WebブラウザによるWebAssemblyバイナリの実行性能を計測した。
+Webブラウザでの実行では、JavaScript実行エンジンによるJITをはじめとした高速化の恩恵を受けられる。
+Webブラウザには、macOS標準のSafari 12.0.1（14606.2.104.1.1）を用いた。
+
+実行時間の計測には、標準化されたWeb APIであるPerformance APIを用いた。
+JavaScriptから\verb|performance.now|関数を実行することで、仕様上はマイクロ秒の精度でタイムスタンプを得られる。
+しかし、いわゆるSpectreと呼ばれる脆弱性への対策として、WebKitでは\verb|performance.now|の精度がミリ秒単位に丸められている\cite{webkit_spectre}\cite{webkit_trac}。
+そこで、同じ関数を10000回ずつ実行し、その平均を実行時間の計測値として用いた。

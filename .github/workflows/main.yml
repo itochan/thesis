@@ -12,6 +12,7 @@ jobs:
     - name: build
       uses: docker://akkyie/thesis
       env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TZ: Asia/Tokyo
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         args: make build && make -j2 redpen || true && .github/workflows/release.sh
