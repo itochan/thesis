@@ -9,15 +9,12 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - uses: docker://akkyie/thesis
-
     - name: build
-      run: make build
-
-    - name: redpen
-      run: make -j2 redpen || true
-
-    - name: release
+      uses: docker://akkyie/thesis
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: .github/workflows/release.sh
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        args: |
+          make build &&
+          make -j2 redpen || true &&
+          .github/workflows/release.sh
