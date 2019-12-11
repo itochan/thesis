@@ -1,27 +1,23 @@
-#!/bin/bash
-cd `dirname $0`
-echo `dirname $0`
-pwd
-ls
-git config --global user.name "im-neko"
-git config --global user.email "yuki@ideta.net"
+#!/usr/bin/env bash
 
-git remote set-url origin https://im-neko:${GITHUB_TOKEN}@github.com/Im-neko/RG-Thesis-Template.git
+set -eux
 
-git checkout -b master
-git pull origin master
-git branch -a
+PDF_FILE="build/thesis.pdf"
+TAG=$(date +'%Y.%m.%d-%H.%M.%S')
+DATE=$(date +'%Y/%m/%d %H:%M:%S')
 
-git log -1
+if [ $CIRCLE_BRANCH = 'master' ]; then
+  PRERELEASE=''
+else
+  PRERELEASE='--prerelease'
+fi
 
-last_commit_message="$(git log -1 | tail -1)"
-echo $last_commit_message
-echo $PWD
+git tag $TAG
+git push --tags
+echo "New tag: $TAG"
 
-docker run --rm -v $PWD:/workdir paperist/alpine-texlive-ja:latest platex thesis.tex
-docker run --rm -v $PWD:/workdir paperist/alpine-texlive-ja:latest platex thesis.tex
-docker run --rm -v $PWD:/workdir paperist/alpine-texlive-ja:latest dvipdfmx thesis.dvi
+echo "Cleaning up under build/"
+find build/* ! -name "*.pdf" ! -name "*.xml" | xargs rm -rf
 
-git add thesis.pdf
-git commit -m '[updater] update pdf'
-git push origin HEAD
+echo "Uploading artifacts"
+$GHR -n "$DATE" $PRERELEASE --delete --replace "$TAG" build
