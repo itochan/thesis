@@ -12,5 +12,4 @@ jobs:
     - name: test
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: sh ./paper/repush.sh
-      
+      run: sh release.sh
