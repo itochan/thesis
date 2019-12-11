@@ -6,7 +6,7 @@ PDF_FILE="build/thesis.pdf"
 TAG=$(date +'%Y.%m.%d-%H.%M.%S')
 DATE=$(date +'%Y/%m/%d %H:%M:%S')
 
-if [ $CIRCLE_BRANCH = 'master' ]; then
+if [ $GITHUB_REF = 'master' ]; then
   PRERELEASE=''
 else
   PRERELEASE='--prerelease'
