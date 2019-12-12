@@ -3,24 +3,16 @@ name: main
 on: [push]
 
 jobs:
-  pre:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v1
 
-  build:
-    needs: pre
-    runs-on: ubuntu-latest
-    container:
-      image: akkyie/thesis
+    - name: build
+      uses: docker://akkyie/thesis
       env:
         TZ: Asia/Tokyo
-      volumes:
-        - $GITHUB_WORKSPACE:/thesis
-
-    steps:
-    - name: build
-      env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: make build && make -j2 redpen || true && .github/workflows/release.sh
+      with:
+        args: cd $GITHUB_WORKSPACE && make build && make -j2 redpen || true && .github/workflows/release.sh
