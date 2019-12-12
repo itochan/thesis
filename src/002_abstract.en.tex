@@ -1,0 +1,21 @@
+\begin{eabstract}
+
+  Microcontrollers statically execute their program written on its RAM such as a flash memory, loading it by the boot loader at startup.
+  Consequently, in order to change what to run, restarting after getting the program on the RAM rewritten by connecting it directly, or doing OTA (Over-the-air) update over a wireless connection.
+
+  On the other hand, Web applications load and execute programs dynamically.
+  As an application platform, the Web browser follows links on a Web page and executes downloaded programs.
+  That is why different applications can be provided for each Web page and programs can be changed depending on the user environment.
+
+  We propose the design of an application platform which uses WebAssembly as the executable format to make dynamic execution possible on microcontrollers.
+  WebAssembly is a virtual instruction set architecture designed to be run on Web browsers and to speed up the dynamic execution on Web browsers.
+  Although it is mainly aimed at being executed on Web browsers, its specification has no restriction nor limit against being used outside Web browsers.
+
+  In this research, we designed a WebAssembly runtime for microcontrollers which dynamically downloads and runs WebAssembly programs.
+  And we implemented a WebAssembly interpreter in C language, in order to evaluate the feasibility of this runtime.
+
+  We executed a single WebAssembly binary on an ESP32 microcontroller and on a PC with Intel Core i5 3GHz CPU.
+  As a result, we found that the ESP32 requires 7 to 15 times as many clocks as the PC.
+  Applying this result to the execution time on Safari Web browser to run the same WebAssembly program on the PC, it was estimated that a WebAssembly runtime which has execution efficiency as Web browsers will be able to calculate 30th Fibonacci number in 560 msec approximately.
+
+\end{eabstract}

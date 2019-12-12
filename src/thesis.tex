@@ -1,0 +1,29 @@
+\include{src/000_meta}
+
+\begin{document}
+
+\ifjapanese
+  \jmaketitle
+\else
+  \emaketitle
+\fi
+
+\include{src/001_abstract.ja}
+\include{src/002_abstract.en}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\pagenumbering{arabic}
+
+\include{src/010_introduction.ja}
+\include{src/020_related_works.ja}
+\include{src/030_design.ja}
+\include{src/040_implementation.ja}
+\include{src/050_evaluation.ja}
+\include{src/060_conclusion.ja}
+\include{src/900_acknowledgement.ja}
+\include{src/910_bibliography.ja}
+
+\end{document}

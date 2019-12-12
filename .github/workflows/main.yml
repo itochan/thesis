@@ -4,13 +4,15 @@ on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v1
-    - name: test
+
+    - name: build
+      uses: docker://akkyie/thesis
       env:
+        TZ: Asia/Tokyo
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: sh ./paper/repush.sh
-      
+      with:
+        args: /bin/sh -c "cd $GITHUB_WORKSPACE && make build && make -j2 redpen || true && .github/workflows/release.sh"

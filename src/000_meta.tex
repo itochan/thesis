@@ -1,0 +1,46 @@
+\newif\ifjapanese
+
+\japanesetrue
+
+\ifjapanese
+  \documentclass[a4j,11pt]{jreport}
+  %%% binder:
+  % \documentclass[a4j,twoside,openright,11pt]{jreport}
+
+  \renewcommand{\bibname}{参考文献}
+  \newcommand{\acknowledgmentname}{謝辞}
+\else
+  \documentclass[a4paper,11pt]{report}
+  \newcommand{\acknowledgmentname}{Acknowledgment}
+\fi
+
+\usepackage{../styles/thesis}
+\usepackage{ascmac}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{url}
+\usepackage{otf}
+\usepackage[dvipdfmx]{hyperref}
+\usepackage{pxjahyper}
+\bibliographystyle{jplain}
+
+\jclass   {卒業論文}
+\jtitle   {マイコン向けWebAssembly実行環境の\\設計と実装}
+\juniv    {慶應義塾大学}
+\jfaculty {環境情報学部}
+\jauthor  {安井 瑛男}
+\jhyear   {30}
+\jsyear   {2018}
+\jkeyword {IoT、WebAssembly、ESP32}
+\jproject {徳田・村井・楠本・中村・高汐・バンミーター・植原・三次・中澤・武田 合同研究プロジェクト}
+\jdate    {2019年1月}
+
+\eclass   {Bachelor's Thesis}
+\etitle   {Implementation and Evaluation of a WebAssembly Runtime for Microcontrollers}
+\euniv    {Keio University}
+\efaculty {Bachelor of Arts in Environment and Information Studies}
+\eauthor  {Akio Yasui}
+\eyear    {2018}
+\ekeyword {IoT, WebAssembly, ESP32}
+\eproject {Tokuda/Murai/Kusumoto/Nakamura/Takashio/Van Meter/Uehara/Mitsugi/Nakazawa/Takeda Labs}
+\edate    {January 2019}
