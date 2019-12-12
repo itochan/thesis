@@ -12,6 +12,8 @@ else
   PRERELEASE='--prerelease'
 fi
 
+git remote set-url origin https://itochan:${GITHUB_TOKEN}@github.com/itochan/thesis.git
+
 git tag $TAG
 git push --tags
 echo "New tag: $TAG"
