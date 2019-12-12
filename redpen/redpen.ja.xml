@@ -45,5 +45,5 @@
     <symbols>
         <symbol name="FULL_STOP" value="．"/>
         <symbol name="COMMA" value="，" />
-    <symbols>
+    </symbols>
 </redpen-conf>
