@@ -1,15 +1,10 @@
 \chapter{関連技術}
 \label{chap:related_works}
 
-本章では、本研究と同様にマイコン上で実行プログラムをインターネット上から取得する手法について、既存の関連技術を示す。
+本章では，本研究と同様のIPを用いてオーディオを伝送する手法について，関連技術を示す．
 
-\section{MicroPython}
+\section{AES67}
 
-MicroPythonは、マイコンを始めとした低性能端末をターゲットとしたPythonコンパイラおよびランタイム実装である\cite{micropython}。
-MicroPythonではHTTP通信のライブラリが標準で提供されており、ファイルからのスクリプトの読み込み・実行も行えるため、インターネット上からプログラムを取得し実行することは行える。
-しかし、Pythonスクリプトや、MicroPythonが提供するクロスコンパイラにより生成されたバイトコードは、外部からダウンロードして実行するために最適化されてはいない。
+\section{Dante}
 
-\section{ESP-IDFによるOTA}
-
-Espressif SystemsによるESP8266およびESP32向け開発環境であるESP-IDF\cite{esp_idf}は、OTAアップデートを行う手段を提供している\cite{esp_ota}。
-起動するプログラムが2つ格納できるようにパーティションを区切り、片方を起動に用いている間にもう片方に格納されているプログラムをアップデートすることで、起動中のOTAアップデートを実現している。
+\section{RAVENNA}
