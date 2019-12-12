@@ -15,4 +15,4 @@ jobs:
         TZ: Asia/Tokyo
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        args: cd $GITHUB_WORKSPACE && make build && make -j2 redpen || true && .github/workflows/release.sh
+        args: /bin/sh -c "cd $GITHUB_WORKSPACE && make build && make -j2 redpen || true && .github/workflows/release.sh"
