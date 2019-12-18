@@ -23,6 +23,26 @@ AES/EBUでは，民生用では馴染みの薄いXLRコネクタやBNCコネク�
 
 Mini-TOSLINKは，以前AppleのパソコンであるiMacやMac mini，MacBook Proにも搭載されていた\footnote{MacBook Proは2015年発売の機種まで，3.5mmステレオミニジャックにアナログ入力とコンボジャックで搭載していた． \url{https://support.apple.com/kb/SP719?locale=ja_JP&viewlocale=ja_JP}}．
 
+\subsection{AES/EBUとS/PDIFの違い}
+
+AES/EBUは業務用でS/PDIFは民生用だが，どのような違いがあるだろうか．以下に比較表を記した．業務用オーディオは，可能な限り伝送距離を長くし，XLRコネクタで接続した場合バランス接続による安定性をとっている．一方，民生用オーディオは出力レベルを低くし，伝送距離も10m程度である．ただし，著作権保護信号を伝送することができ，受信機が信号を認識するとその機器で録音ができなくなるようだ．
+
+\begin{table}[htb]
+  \begin{center}
+    \caption{AES/EBUとS/PDIFの比較\cite{aesebuandspdif}}
+    \begin{tabular}{c|ccc} \hline
+      & AES3-1992 (r1997) & AES-3id-1995\footnote{SMPTE 276M-1995} & S/PDIF\footnote{IEC 60958-3} \\ \hline \hline
+      インターフェイス & バランス & アンバランス & アンバランス \\
+      コネクタ & 3ピンXLR & BNC & RCA / TOSLINK \\
+      信号レベル & 2--7V peak to peak & 1.0--1.2V peak to peak & 0.5--0.6V peak to peak \\
+      最小信号レベル & 0.2V & 0.32V & 0.2V \\
+      最大伝送距離 & 100m & 1000m & 10m \\
+      コピー制御 & 不可 & 不可 & 可能 \\
+      ビット深度 & 24bit & 24bit & 20bit（24bitに拡張可能）\footnote{4bit分予備領域として確保されており，20+4bitを合わせて送信できる．} \\ \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
 \section{SDI}
 
 \section{Dante}
