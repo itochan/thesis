@@ -3,8 +3,24 @@
 
 本章では，本研究と同様のIPを用いてオーディオを伝送する手法について，関連技術を示す．
 
-\section{AES67}
+\section{AES/EBU}
+
+AES3\cite{aes3-1992}とEBU Tech.3250-E\cite{ebutech-3250-e}は，1985年に策定されたデジタルオーディオ伝送規格である．オーディオ専門家の国際組織である米国オーディオ技術者協会（AES）\footnote{Audio Engineering Society, Inc. \url{http://www.aes.org/}}と，欧州放送連合（EBU）\footnote{European Broadcasting Union \url{https://www.ebu.ch/home}}の両者によって策定された規格だ．なお，両者の名前をとって一般的にAES/EBUの名称で呼ばれている．
+
+また，AES3はIEC（International Electrotechnical Commission）によって標準化もされている．IECによる標準化では4つのパートで構成されており，IEC 60958-3では民生用途向け（いわゆるS/PDIF）と，IEC 60958-4では業務用途向けのものが定められている．
+
+接続するインターフェイスはIEC規格によって策定されている．業務用のものでは，アナログオーディオ伝送にも用いられるXLRコネクタによるバランス（平衡）接続や，BNCコネクタを用いた同軸ケーブルによるアンバランス（不平衡）接続，さらにはD-subコネクタを用いた音響機器メーカーによる独自規格が存在する．
+
+\subsection{AES-3id-1995}
+
+BNCコネクタを用いたアンバランス接続は，AES3-id-1995という名称で策定されている．AES/EBUでは，インピーダンスが110Ωのケーブルを用いる．バランス接続は，ノイズの影響を受けにくく安定した伝送が期待できるものの，アンバランス接続の同軸ケーブルに比べ高価である．BNCコネクタが付いたインピーダンスが75Ωの同軸ケーブルは，業務用映像伝送の分野で主流だ．大規模なホールのような会場では予めさまざまな場所に配線しておき，パッチ盤で接続するという手法がある．パッチ盤のコネクタがBNCであれば何を伝送してもよいため，AES/EBUで同軸ケーブルを用いて伝送するというアイデアは，映像技術の団体米国映画テレビ技術者協会（SMPTE）\footnote{Society of Motion Picture and Television Engineers \url{https://www.smpte.org/}}からAESに対して要望が出ていたという経緯がある\cite{aes3id-1995-column}．同軸ケーブルを用いた伝送は，信号を補償（ブースト）することでより長距離伝送が可能だ．
+
+\section{S/PDIF}
+
+\section{SDI}
 
 \section{Dante}
 
 \section{RAVENNA}
+
+\section{AES67}
