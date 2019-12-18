@@ -1,23 +1,25 @@
 \chapter{関連技術}
 \label{chap:related_works}
 
-本章では，本研究と同様のIPを用いてオーディオを伝送する手法について，関連技術を示す．
+本章では，本研究と関連するオーディオのデジタル伝送を行う手法について，関連技術を示す．
 
 \section{AES/EBU}
 
-AES3\cite{aes3-1992}とEBU Tech.3250-E\cite{ebutech-3250-e}は，1985年に策定されたデジタルオーディオ伝送規格である．オーディオ専門家の国際組織である米国オーディオ技術者協会（AES）\footnote{Audio Engineering Society, Inc. \url{http://www.aes.org/}}と，欧州放送連合（EBU）\footnote{European Broadcasting Union \url{https://www.ebu.ch/home}}の両者によって策定された規格だ．なお，両者の名前をとって一般的にAES/EBUの名称で呼ばれている．
+AES/EBUは，オーディオ専門家の国際組織である米国オーディオ技術者協会（AES）\footnote{Audio Engineering Society, Inc. \url{http://www.aes.org/}}と，欧州放送連合（EBU）\footnote{European Broadcasting Union \url{https://www.ebu.ch/home}}の両者によって策定されたデジタルオーディオ伝送規格である．それぞれAES3-1985\cite{aes3-1985}とEBU Tech.3250-E\cite{ebutech-3250-e}という名称で，1985年に策定された．なお，両者の名前をとって一般的にAES/EBUの名称で呼ばれている．
 
-また，AES3はIEC（International Electrotechnical Commission）によって標準化もされている．IECによる標準化では4つのパートで構成されており，IEC 60958-3では民生用途向け（いわゆるS/PDIF）と，IEC 60958-4では業務用途向けのものが定められている．
+また，AES3はIEC（International Electrotechnical Commission）によって標準化もされている．IECによる標準化では4つのパートで構成されており，IEC 60958-3ではAES3から派生した民生用途向け（いわゆるS/PDIF）と，IEC 60958-4ではAES3に基づいた業務用途向けのものが定められている．
 
-接続するインターフェイスはIEC規格によって策定されている．業務用のものでは，アナログオーディオ伝送にも用いられるXLRコネクタによるバランス（平衡）接続や，BNCコネクタを用いた同軸ケーブルによるアンバランス（不平衡）接続，さらにはD-subコネクタを用いたオーディオ機器メーカーによる独自規格が存在する．
+接続するインターフェイスはIEC規格によって策定されている．アナログオーディオ伝送にも用いられるXLRコネクタによるバランス（平衡）接続や，BNCコネクタを用いた同軸ケーブルによるアンバランス（不平衡）接続，さらにはD-subコネクタを用いたオーディオ機器メーカーによる独自規格が存在する．本稿執筆時点で最新のAES3規格では，光ファイバーによる伝送も検討されている\footnote{AES3-2009 (r2019): AES standard for digital audio engineering - Serial transmission format for two-channel linearly represented digital audio data \url{http://www.aes.org/publications/standards/search.cfm?docID=13}}．
 
 \subsection{AES-3id-1995}
 
-BNCコネクタを用いたアンバランス接続は，AES3-id-1995という名称で策定されている．AES/EBUでは，インピーダンスが110Ωのケーブルを用いる．バランス接続は，ノイズの影響を受けにくく安定した伝送が期待できるものの，アンバランス接続の同軸ケーブルに比べ高価である．BNCコネクタが付いたインピーダンスが75Ωの同軸ケーブルは，業務用映像伝送の分野で主流だ．大規模なホールのような会場では予めさまざまな場所に配線しておき，パッチ盤で接続するという手法がある．パッチ盤のコネクタがBNCであれば何を伝送してもよいため，AES/EBUで同軸ケーブルを用いて伝送するというアイデアは，映像技術の団体米国映画テレビ技術者協会（SMPTE）\footnote{Society of Motion Picture and Television Engineers \url{https://www.smpte.org/}}からAESに対して要望が出ていたという経緯がある\cite{aes3id-1995-column}．同軸ケーブルを用いた伝送は，信号を補償（ブースト）することでより長距離伝送が可能だ．
+BNCコネクタを用いたアンバランス接続は，AES3-id-1995という名称で策定されている．AES/EBUでは，インピーダンスが110Ωのケーブルを用いる．バランス接続は，ノイズの影響を受けにくく安定した伝送が期待できるものの，アンバランス接続の同軸ケーブルに比べ高価である．BNCコネクタが付いたインピーダンスが75Ωの同軸ケーブルは，業務用映像伝送の分野で主流だ．
+
+大規模なホールのような会場では予めさまざまな場所に配線しておき，パッチ盤で接続するという手法がある．パッチ盤のコネクタがBNCであれば何を伝送してもよいため，映像伝送用に配線されている既存の同軸ケーブルを利用することができる．AES/EBUで同軸ケーブルを用いて伝送するというアイデアは，映像技術の団体米国映画テレビ技術者協会（SMPTE）\footnote{Society of Motion Picture and Television Engineers \url{https://www.smpte.org/}}からAESに対して要望が出ていたという経緯がある\cite{aes3id-1995-column}．同軸ケーブルを用いた伝送は，信号を補償（ブースト）することで長距離伝送が可能となる．
 
 \section{S/PDIF}
 
-前述したとおり業務用のAES/EBUから派生したの民生用向けの規格は，IEC 60958-3によって標準化されている．この規格は，一般的にS/PDIF（Sony/Philips Digital Interface）と呼ばれる．日本のソニーとオランダのフィリップスが開発したためそのように呼ばれている．
+前述したとおり，業務用のAES/EBUから派生したの民生用向けの規格は，IEC 60958-3によって標準化されている．この規格は，一般的にS/PDIF（Sony/Philips Digital Interface）と呼ばれる．日本のソニーとオランダのフィリップスが開発したためそのように呼ばれている．
 
 AES/EBUでは，民生用では馴染みの薄いXLRコネクタやBNCコネクタが用いられてきたが，S/PDIFでは光デジタル音声端子（Optical）と同軸デジタル音声端子（Coaxial）の2種類が存在する．光デジタル端子は，東芝が提唱したTOSLINKと呼ばれる角型コネクタ，Mini-TOSLINKと呼ばれる3.5mmステレオミニプラグの形状をしたコネクタがある．同軸端子は，RCAコネクタが使われている．
 
@@ -25,22 +27,22 @@ Mini-TOSLINKは，以前AppleのパソコンであるiMacやMac mini，MacBook P
 
 \subsection{AES/EBUとS/PDIFの違い}
 
-AES/EBUは業務用でS/PDIFは民生用だが，どのような違いがあるだろうか．以下に比較表を記した．業務用オーディオは，可能な限り伝送距離を長くし，XLRコネクタで接続した場合バランス接続による安定性をとっている．一方，民生用オーディオは出力レベルを低くし，伝送距離も10m程度である．ただし，著作権保護信号を伝送することができ，受信機が信号を認識するとその機器で録音ができなくなるようだ．
+AES/EBUは業務用でS/PDIFは民生用だが，それぞれの違いを表\ref{tab:compare}に記す．業務用オーディオは，可能な限り伝送距離を長くし，XLRコネクタで接続した場合バランス接続による安定性をとっている．一方，民生用オーディオは出力レベルを低くし，伝送距離も10m程度である．ただし，著作権保護信号を伝送することができ，受信機が信号を認識するとその機器で録音ができなくされている機器もある．
 
 \begin{table}[htb]
-  \begin{center}
-    \caption{AES/EBUとS/PDIFの比較\cite{aesebuandspdif}}
-    \begin{tabular}{c|ccc} \hline
-      & AES3-1992 (r1997) & AES-3id-1995\footnote{SMPTE 276M-1995} & S/PDIF\footnote{IEC 60958-3} \\ \hline \hline
-      インターフェイス & バランス & アンバランス & アンバランス \\
-      コネクタ & 3ピンXLR & BNC & RCA / TOSLINK \\
-      信号レベル & 2--7V peak to peak & 1.0--1.2V peak to peak & 0.5--0.6V peak to peak \\
-      最小信号レベル & 0.2V & 0.32V & 0.2V \\
-      最大伝送距離 & 100m & 1000m & 10m \\
-      コピー制御 & 不可 & 不可 & 可能 \\
-      ビット深度 & 24bit & 24bit & 20bit（24bitに拡張可能）\footnote{4bit分予備領域として確保されており，20+4bitを合わせて送信できる．} \\ \hline
-    \end{tabular}
-  \end{center}
+  \label{tab:compare}
+  \caption{AES/EBUとS/PDIFの比較\cite{aesebuandspdif}}
+  \begin{tabular}{c|ccc} \hline
+    & AES3-1992 (r1997) & AES-3id-1995\footnote{SMPTE 276M-1995} & S/PDIF\footnote{IEC 60958-3} \\ \hline \hline
+    ケーブル & 110Ω STP & 75Ω 同軸 & 75Ω 同軸/光ファイバー \\
+    インターフェイス & バランス & アンバランス & アンバランス \\
+    コネクタ & 3ピンXLR & BNC & RCA / TOSLINK \\
+    信号レベル & 2--7V peak to peak & 1.0--1.2V peak to peak & 0.5--0.6V peak to peak \\
+    最小信号レベル & 0.2V & 0.32V & 0.2V \\
+    最大伝送距離 & 100m & 1000m & 10m \\
+    コピー制御 & 不可 & 不可 & 可能 \\
+    ビット深度 & 24bit & 24bit & 20bit（24bitに拡張可能）\footnote{4bit分予備領域として確保されており，20+4bitを合わせて送信できる．} \\ \hline
+  \end{tabular}
 \end{table}
 
 \section{SDI}
