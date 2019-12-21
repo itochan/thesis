@@ -42,8 +42,4 @@
         <validator name="ParagraphNumber"/>
         <validator name="ListLevel" />
     </validators>
-    <symbols>
-        <symbol name="FULL_STOP" value="．"/>
-        <symbol name="COMMA" value="，" />
-    </symbols>
 </redpen-conf>
