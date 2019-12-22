@@ -1,13 +1,39 @@
-\chapter{関連技術}
+\chapter{業務用オーディオの利用現場と関連技術}
 \label{chap:related_works}
 
-\section{業務用オーディオの現場}
+\section{構成}
 
-\section{オーディオのデジタル伝送技術}
+\section{オーディオ機器}
 
-本章では、本研究と関連するオーディオのデジタル伝送を行う関連技術について、IPベースの伝送とIPベースでない伝送について示す。
+\subsection{マイク}
 
-\section*{非IPベースのデジタル伝送}
+\subsection{ワイヤレスシステム}
+
+\subsection{プレーヤー}
+
+\subsection{ミキサー}
+
+\subsection{アンプ}
+
+\subsection{イコライザー}
+
+\subsection{スピーカー}
+
+\subsection{レコーダー}
+
+\subsection{オーディオインターフェイス}
+
+\subsection{映像機器}
+
+オーディオ信号が、映像機器によって入力されることもある。たとえば、ビデオカメラの映像出力やPCの画面出力にオーディオ信号が入ることがある。ビデオスイッチャーによって映像・音声信号の分離が行われ、音声信号がミキサーに入力される構成が一般的だ。
+
+\section{インターフェイス}
+
+\subsection{アナログ入出力}
+
+うまい、やすい、はやい。
+
+マルチケーブルを用いて1本で複数のチャンネルを束ねることもある。
 
 \subsection{AES/EBU}
 \label{sec:aes/ebu}
@@ -66,7 +92,30 @@ SDI\footnote{Serial Digital Interface}は、ビデオ信号を伝送する規格
 
 CobraNetは、1996年に米Peak Audioが開発したEthernetを用いたオーディオ伝送規格である。Ethernetを使うが、IPベースでないのが特徴的だ\cite{best-practices-in-network-audio}。
 
-\section*{IPベースのデジタル伝送}
+\section{ケーブル}
+
+\subsection{マイクケーブル}
+
+さまざまなコネクタがあり、バランス接続ではXLR、TRS（モノラル）、アンバランス接続ではTRS（ステレオ）、RCAなどが存在する。コネクタを用いずに銅線そのままで接続する方法もある。
+
+\subsection{スピーカーケーブル}
+XLR、フォン、スピコン。パッシブスピーカーで使うが、パワードスピーカーはマイクケーブルで大丈夫。
+
+\subsection{同軸ケーブル}
+
+\subsection{光ケーブル}
+
+\subsection{イーサネットケーブル}
+
+\section{帯域}
+
+民生用オーディオは圧縮されている場合がほとんど。MP3やAACオーディオはXXXkbps。一方、業務用オーディオは非圧縮のものが非常に多い。XXXMbpsほどで、圧倒的な情報量の存在。
+
+\section{IPベースのデジタル伝送規格}
+
+本項では、本研究と関連するオーディオのデジタル伝送を行う関連技術について、IPベースの伝送について示す。
+
+\subsection{Internet Protocol}
 
 \subsection{Ethernet AVB}
 
@@ -92,7 +141,7 @@ RAVENNAは、無償でバーチャルオーディオデバイスを公開して�
   RAVENNA was developed by ALC NetworX who continues to be leading developer of the technology. However, given that RAVENNA is an open technology based on existing standards, this means that anyone is free to develop their own solutions. Indeed, this is actively encouraged in order to give customers as much choice as possible and not have to rely on ALC NetworX as the exclusive solution provider.
 \end{quotation}
 
-\section{AES67}
+\subsection{AES67}
 
 AES67は、AESが策定したIPベースのオーディオ伝送規格である。本研究において使用する規格でもある。\ref{sec:aes/ebu}節のAES/EBU同様、策定当初から仕様が公開されている。
 
