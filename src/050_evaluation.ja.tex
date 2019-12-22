@@ -1,4 +1,10 @@
 \chapter{評価}
 \label{chap:evaluation}
 
-ここに低遅延なベンチ結果を貼る。
+ベンチマークのシナリオを考えるだけ考えた。下記のいずれかをやるか、全部やるかについては今後の課題としたい。
+
+\begin{itemize}
+  \item マイク→オーディオインターフェイス→PC→AES67→ミキサー→AES67→PCまでの遅延計測
+  \item PC→PCM音源→AES67→ミキサー→AES67→PCまでの遅延計測
+  \item Dante Virtual Soundcard vs RAVENNA Virtual Audio Device vs 本研究で実装するAES67アプリケーション
+\end{itemize}
