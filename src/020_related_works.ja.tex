@@ -31,27 +31,66 @@ IPベースのデジタル伝送では、すべての伝送をL2スイッチを�
 
 \section{オーディオ機器}
 
+本節では、図\ref{fig:pa_equipment_analog}と図\ref{fig:pa_equipment_digital}で示したオーディオ機器について、解説する。
+
 \subsection{マイク}
 
-\subsection{ワイヤレスシステム}
+マイクは、音声を電気信号に変換する装置である。伝送方式から、有線マイクと無線マイク（以下、ワイヤレスマイク）に分類できる。
 
-\subsection{プレーヤー}
+ワイヤレスマイクの場合、送信機と受信機に分かれている。送信機は、マイクで変換した信号をアンテナを通して無線によって伝送する。受信機は、アンテナから受信した電波という構成だ。それらを総称してワイヤレスシステムと呼ばれることがある。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.4\linewidth]{img/microphone.pdf}
+  \caption{マイク}
+\end{figure}
 
 \subsection{ミキサー}
 
-\subsection{アンプ}
+ミキサーは、複数チャンネルのオーディオ入力をミックスし、1チャンネル以上の出力をする装置である。アナログミキサーとデジタルミキサーの2つに分類できる。ミックス処理をアナログ回路で行うか、DSP\footnote{Digital Signal Processor}によって行うかの違いがある。
 
-\subsection{イコライザー}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.4\linewidth]{img/mixer.pdf}
+  \caption{ミキサー}
+\end{figure}
+
+\subsection{パワーアンプ}
+
+ミキサーからの出力では、スピーカーを駆動させるのに必要な電気信号のレベルが不足している。電気信号を増幅させるのがパワーアンプと呼ばれる装置だ。ただし、スピーカーにパワーアンプが内蔵されているものもあり、その場合パワーアンプは不要となる。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.4\linewidth]{img/poweramp.pdf}
+  \caption{パワーアンプ}
+\end{figure}
 
 \subsection{スピーカー}
 
-\subsection{レコーダー}
+スピーカーは、電気信号を音に変換する装置だ。人の耳に音を届けるために必要である。
 
-\subsection{オーディオインターフェイス}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.4\linewidth]{img/speaker.pdf}
+  \caption{スピーカー}
+\end{figure}
 
 \subsection{映像機器}
 
 オーディオ信号が、映像機器によって入力されることもある。たとえば、ビデオカメラの映像出力やPCの画面出力にオーディオ信号が入ることがある。ビデオスイッチャーによって映像・音声信号の分離が行われ、音声信号がミキサーに入力される構成が一般的だ。
+
+\begin{figure}[htbp]
+  \begin{minipage}{0.5\hsize}
+    \centering
+    \includegraphics[width=\linewidth]{img/video_camera.pdf}
+    \caption{ビデオカメラ}
+  \end{minipage}
+  \begin{minipage}{0.5\hsize}
+    \centering
+    \includegraphics[width=\linewidth]{img/video_mixer.pdf}
+    \caption{ビデオミキサー}
+  \end{minipage}
+\end{figure}
 
 \section{インターフェイス}
 \label{sec:interface}
