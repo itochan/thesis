@@ -1,4 +1,14 @@
 \chapter{実装}
 \label{chap:implementation}
 
-インプリしちゃうぞ☆
+本章では、\ref{chap:design}章で示した設計を実装した際の詳細について述べる。
+
+AES67の送受信アプリケーションは、Go言語で実装する。Go言語を採用した理由は、大きく3つの理由がある。
+
+\begin{itemize}
+  \item 現代的な静的型付け言語である
+  \item 容易にシステムコールを呼び出すことが可能
+  \item 異なるOSやアーキテクチャの上で動くバイナリを生成できる
+\end{itemize}
+
+GolangでAES67 sender/receiverを作る。AES67はユニキャストで送れるため、ユニキャストで送る。時間があったらマルチキャストもやる。
