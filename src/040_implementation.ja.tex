@@ -11,17 +11,19 @@ AES67の送受信アプリケーションは、Go言語で実装する。Go言�
   \item 異なるOSやアーキテクチャの上で動くバイナリを生成できる
 \end{itemize}
 
-Go言語でAES67の送受信アプリケーションを実装する。
+なお、実装コードはGitHubのitochan/aes67-transmitterリポジトリ（\url{https://github.com/itochan/aes67-transmitter}）で公開している。
 
-\section{実装環境と対応プラットフォーム}
+\section{対応する環境とプラットフォーム}
 
-実装環境
+実装するにあたり、Go言語の特色であるクロスコンパイル可能な特徴を生かし、複数のプラットフォームで動作可能とした。Raspberry PiのようなARMベースのプロセッサを搭載したコンピュータでも動作させるため、ARMv7アーキテクチャもサポートしている。
+
+\subsection{実装環境}
 
 \begin{itemize}
   \item{go version go1.13.6}
 \end{itemize}
 
-対応OS
+\subsection{対応OS}
 
 \begin{itemize}
   \item Windows (\$GOOS=windows)
@@ -29,7 +31,7 @@ Go言語でAES67の送受信アプリケーションを実装する。
   \item Linux (\$GOOS=linux)
 \end{itemize}
 
-対応アーキテクチャ
+\subsection{対応アーキテクチャ}
 
 \begin{itemize}
   \item amd64 (\$GOARCH=amd64)
@@ -59,6 +61,15 @@ SAPでは、RFC 2974\cite{rfc2974}で定められているマルチキャスト�
   \end{verbatim}
 \end{itembox}
 
+本来AES67では、PTP (Precision Time Protocol) v2経由でクロック同期する必要がある。今回の実装ではPTPv2によるクロック同期は行わないものとしているが、PTPv2の同期が行う場合は、上記マニフェストに以下のマニフェストを追加する。
+
+\begin{itembox}[l]{Session Description with PTPv2}
+  \begin{verbatim}
+    a=mediaclk:direct=1810024580
+    a=ts-refclk:ptp=IEEE1588-2008:39-A7-94-FF-FE-07-CB-D:0
+  \end{verbatim}
+\end{itembox}
+
 \begin{description}
   \item[v] SDPのプロトコルバージョン
   \item[o] オリジン: [ユーザネーム] [セッションID] [セッションバージョン] [ネットワークタイプ] [アドレスタイプ] [ユニキャストアドレス]
@@ -68,3 +79,67 @@ SAPでは、RFC 2974\cite{rfc2974}で定められているマルチキャスト�
   \item[m] メディア説明: [メディア] [ポート] [プロトコル] [フォーマット]
   \item[a] 属性: [属性名]:[値]
 \end{description}
+
+\section{RTP通信}
+
+AES67のオーディオストリーム伝送には、RTPを用いる。RTP通信を行うにあたり、GoRTP\footnote{wernerd/GoRTP \url{https://github.com/wernerd/GoRTP}}ライブラリを利用した。後述する理由により、オリジナルのGoRTPからAES67に必要な改変を行ったものを利用している\footnote{itochan/GoRTP \url{https://github.com/itochan/GoRTP}}。
+
+\subsection{IPパケットにおけるDSCP値の付加}
+
+AES67では、DiffServベースのQoS(Quality of Service)が必須条件に含まれている。QoSは、パケットに優先順位を付け、ネットワークスイッチ内でどのパケットの処理を優先するか決めるものだ。DiffServは、IPヘッダにおけるDSフィールド中のDSCP値を参照し、優先度のクラスによりキューイングするものである\cite{yamaha_diffserv}。
+
+GoRTPの実装では、UDPパケットのヘッダの値を変更することはできないため、AES67で必須条件のDSCP値を付加するための変更を行っている。
+
+\subsubsection{QoSクラスとDiffServアソシエーション}
+
+AES67で使用されているQoSクラスとDiffServアソシエーションを記す\cite{aes67-2018}。本実装では、以下のうちRTPパケットにおいてDSCP値34を付加して送信している。
+
+\begin{description}
+  \item[クラス名] Clock
+  \item[トラフィックタイプ] IEEE 1588-2008 $Announce, Sync, Follow\_Up, Delay\_Req, Delay\_Resp, \\Pdelay\_Req, Pdelay\_Resp and Pdelay\_Resp\_Follow\_Up$ packets
+  \item[デフォルトDiffServクラス（DSCP10進数値）] EF(46)
+\end{description}
+
+\hrulefill
+
+\begin{description}
+  \item[クラス名] Media
+  \item[トラフィックタイプ] RTP and RTCP media stream data
+  \item[デフォルトDiffServクラス（DSCP10進数値）] AF41 (34)
+\end{description}
+
+\hrulefill
+
+\begin{description}
+  \item[クラス名] Best effort
+  \item[トラフィックタイプ] IEEE 1588-2008 signaling and management messages. Discovery and connection management messages.
+  \item[デフォルトDiffServクラス（DSCP10進数値）] DF (0)
+\end{description}
+
+\subsection{RTPパケットのペイロード}
+
+RTPパケットのペイロードは1パケット中で48サンプル送る場合において、PCM 24bit/48kHzであれば288バイトとなる\cite{aes67-pcap}。必要なRTPペイロードの計算式を式\ref{equ:rtp_payload}に示す。
+
+% \begin{itembox}[l]{RTPパケットペイロードサイズの計算式}
+  % \label{equ:rtp_payload}
+  % \caption{RTPパケットペイロードサイズの計算式}
+\begin{equation}
+  \label{equ:rtp_payload}
+  P = bsc
+\end{equation}
+\begin{itemize}
+  \item $P$: total payload bytes [byte]
+  \item $b$: bit depth [byte] (24bit: 3[bytes])
+  \item $s$: sampling rate [kHz] (48kHz: 48[kHz])
+  \item $c$: audio channels [channel] (Stereo channel: 2[channel])
+\end{itemize}
+
+送信機能では、PCMで記録されたオーディオファイルを288バイトずつ取り出し、RTPペイロードに載せたものを伝送する。
+
+受信機能では、RTPペイロードからオーディオを取り出し、保存する。
+
+\subsection{RTPパケットの送信間隔}
+
+RTPパケットを送信する間隔は、安定したオーディオストリームの送信において重要だ。本実験で実装したアプリケーション同士で送受信を行えば、パケットの間隔を気にせずとも受信できると考えられる。しかし、受信側がAES67対応のオーディオ機器の場合において、同時に多くのパケットを受信するとバッファサイズを超え、処理能力の限界を超えることがある。一度に多くのオーディオストリームを受信し処理能力を超えると受信したオーディオストリームは切り捨てられ、音の断続的な途切れが発生する。
+
+48kHzであれば1秒間に48サンプルを1000回送信することができれば、理想とする低遅延な伝送を行うことができる。実装したアプリケーションでは、1ミリ秒ごとに送信する実装となっている。
