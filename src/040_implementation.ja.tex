@@ -11,4 +11,60 @@ AES67の送受信アプリケーションは、Go言語で実装する。Go言�
   \item 異なるOSやアーキテクチャの上で動くバイナリを生成できる
 \end{itemize}
 
-GolangでAES67 sender/receiverを作る。AES67はユニキャストで送れるため、ユニキャストで送る。時間があったらマルチキャストもやる。
+Go言語でAES67の送受信アプリケーションを実装する。
+
+\section{実装環境と対応プラットフォーム}
+
+実装環境
+
+\begin{itemize}
+  \item{go version go1.13.6}
+\end{itemize}
+
+対応OS
+
+\begin{itemize}
+  \item Windows (\$GOOS=windows)
+  \item macOS (\$GOOS=darwin)
+  \item Linux (\$GOOS=linux)
+\end{itemize}
+
+対応アーキテクチャ
+
+\begin{itemize}
+  \item amd64 (\$GOARCH=amd64)
+  \item armv7 (\$GOARCH=arm \$GOARM=7)
+\end{itemize}
+
+\section{SAPプロトコルのアナウンス}
+
+SAPでは、RFC 2974\cite{rfc2974}で定められているマルチキャストアドレスとポートに機器の対応プロトコルやIPアドレス、ポート番号をアナウンスする。その内容にはRFC 4566\cite{rfc4566}で策定されたSession Description Protocol (SDP)を用いる。
+
+本実装では、次のセッション告知を行なっている。なお、IPアドレスとホスト名に関しては一部マスキング処理を施している。
+
+\begin{itembox}[l]{Session Description}
+  \begin{verbatim}
+    v=0
+    o=- 4 0 IN IP4 203.178.XXX.YYY
+    s=wifi-XXX-YYY.sfc.wide.ad.jp
+    c=IN IP4 239.69.XXX.YYY/15
+    t=0 0
+    m=audio 5004 RTP/AVP 97
+    c=IN IP4 239.69.XXX.YYY/15
+    a=rtpmap:97 L24/48000/2
+    a=sync-time:0
+    a=framecount:48
+    a=ptime:1
+    a=recvonly
+  \end{verbatim}
+\end{itembox}
+
+\begin{description}
+  \item[v] SDPのプロトコルバージョン
+  \item[o] オリジン: [ユーザネーム] [セッションID] [セッションバージョン] [ネットワークタイプ] [アドレスタイプ] [ユニキャストアドレス]
+  \item[s] セッション名
+  \item[c] コネクションデータ: [ネットワークタイプ] [アドレスタイプ] [コネクションアドレス]
+  \item[t] タイミング: [スタートタイム] [ストップタイプ]
+  \item[m] メディア説明: [メディア] [ポート] [プロトコル] [フォーマット]
+  \item[a] 属性: [属性名]:[値]
+\end{description}
