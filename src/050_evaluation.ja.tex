@@ -10,3 +10,41 @@
 \end{itemize}
 
 また、伝送経路における遅延とジッタや、UDP通信におけるパケットロス率、アプリケーションを実行するコンピュータの環境についても評価に含めたい。特に、伝送経路中のL2スイッチが2台以上になった場合、どの程度遅延が増大するかを調査する。アプリケーションの実行環境については、つよいコンピュータ（第9世代Core i7）とよわいコンピュータ（Raspberry Pi 4/Zero）などの性能差や、LinuxカーネルにおけるTickパラメータの差異によってベンチマークのパフォーマンスに変化があるのか確認したい。
+
+\section{評価環境}
+
+\begin{table}[htb]
+  \label{tab:evaluation_computer}
+  \caption{コンピュータ評価環境}
+  \centering
+  \begin{tabular}{c|l} \hline
+    OS & Windows 10 Pro バージョン 1909 \\ \hline
+    CPU & Intel Core i7-9700K 3.60GHz \\ \hline
+    RAM & 32GB \\ \hline
+    SSD & Samsung SSD 970 EVO Plus 250GB \\ \hline
+    NIC & StarTech ST1000SPEXI (Intel I210-AT) \\ \hline
+  \end{tabular}
+\end{table}
+
+\begin{table}[htb]
+  \label{tab:evaluation_network}
+  \caption{ネットワーク評価環境}
+  \centering
+  \begin{tabular}{c|l} \hline
+    ネットワークスイッチ & YAMAHA SWR2311P-10G \\ \hline
+  \end{tabular}
+\end{table}
+
+\section{AES67伝送の結果}
+
+\subsection{UDPパケット転送遅延}
+
+最小0.01ms、最大0.05msの遅延が発生した。
+
+\subsection{パケットドロップ率}
+
+パケットのドロップ率は、0\%だった。
+
+\section{RTPパケット送信間隔の適正値}
+
+1ms間隔で48サンプルずつが正解なのか、10ms間隔で480サンプルずつが正解なのか
