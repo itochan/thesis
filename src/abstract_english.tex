@@ -12,11 +12,17 @@ Abstract of Bachelor's Thesis - Academic Year 2019
 ~ \\
 IP audio transmission has emerged to solve the problems of conventional audio transmission. The AES 67 standard was established to standardize the various IP audio transmission standards that were established later. It is now possible to freely develop devices and applications without using the commercial standard which is a black box.
 
-Therefore, we decided to implement an application conforming to AES 67 and verify the availability of the application in the actual audio field for business use.
-
 Requirements for professional audio systems include low latency, high sound quality, and transmission stability.
 
-In this paper, it is considered that the software audio transmission of AES 67 satisfies the requirements for professional audio.
+One study found that most subjects felt no delay at 10 milliseconds when measuring how slow they felt and how difficult it was to play the violin. The delay time from the input of the sound to the output of the speaker includes a time other than the transmission path. For example, when a wireless microphone is used, a delay occurs in signal processing of an effector or the like. Therefore, it is important to reduce the delay in audio transmission. The IP audio transmission standard called Dante allows a delay of 1 millisecond by default.
+
+Digital audio transmissions are frequently used in commercial applications because they do not degrade the signal in the transmission path, but they are transmitted uncompressed. In the case of lossy compression, it deteriorates every time compression and expansion are repeated. Therefore, uncompressed transmission is an essential condition for professional audio, which can perform complex signal processing. It is desirable if the frequency is about 48 kHz/24 bit PCM.
+
+The stability of the transmission path is also an essential element depending on the application. At concerts and concerts by professional artists, the sound cannot be cut off for a moment. If equipment trouble or a cable break occurs, audio transmission is stopped. Some digital audio transmission standards support redundant transmission paths.
+
+Based on the requirements for these professional audio systems, we decided to verify the applicability of AES 67 software implementation in the actual professional audio field. Go language was adopted in the implementation. This is because of its high portability and high speed operation.
+
+As a result, the amount of delay is less than the expected 1 millisecond, and AES 67 software audio transmission is considered to meet the requirements for professional audio.
 ~ \\
 Keywords : \\
 \underline{1. AES67},
