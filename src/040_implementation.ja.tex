@@ -92,47 +92,39 @@ GoRTPの実装では、UDPパケットのヘッダの値を変更することは
 
 \subsubsection{QoSクラスとDiffServアソシエーション}
 
-AES67で使用されているQoSクラスとDiffServアソシエーションを記す\cite{aes67-2018}。本実装では、以下のうちRTPパケットにおいてDSCP値34を付加して送信している。
+AES67で使用されているQoSクラスとDiffServアソシエーションを表\ref{tab:diffserv_class}に示す\cite{aes67-2018}。本実装では、以下のうちRTPパケットにおいてDSCP値34を付加して送信している。
 
-\begin{description}
-  \item[クラス名] Clock
-  \item[トラフィックタイプ] IEEE 1588-2008 $Announce, Sync, Follow\_Up, Delay\_Req, Delay\_Resp, \\Pdelay\_Req, Pdelay\_Resp and Pdelay\_Resp\_Follow\_Up$ packets
-  \item[デフォルトDiffServクラス（DSCP10進数値）] EF(46)
-\end{description}
-
-\hrulefill
-
-\begin{description}
-  \item[クラス名] Media
-  \item[トラフィックタイプ] RTP and RTCP media stream data
-  \item[デフォルトDiffServクラス（DSCP10進数値）] AF41 (34)
-\end{description}
-
-\hrulefill
-
-\begin{description}
-  \item[クラス名] Best effort
-  \item[トラフィックタイプ] IEEE 1588-2008 signaling and management messages. Discovery and connection management messages.
-  \item[デフォルトDiffServクラス（DSCP10進数値）] DF (0)
-\end{description}
+\begin{table}[htbp]
+  \centering
+  \caption{QoSクラスとDiffServアソシエーション}
+  \label{tab:diffserv_class}
+  \begin{tabular}{c|p{10cm}|p{3cm}}
+    クラス名 & トラフィックタイプ & デフォルトDiffServクラス\par （DSCP10進数値） \\ \hline
+    Clock & IEEE 1588-2008 Announce, Sync, Follow\_Up, Delay\_Req, Delay\_Resp, Pdelay\_Req, Pdelay\_Resp and Pdelay\_Resp\_Follow\_Up packets & EF(46) \\
+    Media & RTP and RTCP media stream data & AF41 (34) \\
+    Best effort & IEEE 1588-2008 signaling and management messages. Discovery and connection management messages. & DF (0)
+  \end{tabular}
+\end{table}
 
 \subsection{RTPパケットのペイロード}
 
-RTPパケットのペイロードは1パケット中で48サンプル送る場合において、PCM 24bit/48kHzであれば288バイトとなる\cite{aes67-pcap}。必要なRTPペイロードの計算式を式\ref{equ:rtp_payload}に示す。
+RTPパケットのペイロードは1パケット中で48サンプル送る場合において、PCM 24bit/48kHzであれば288バイトとなる\cite{aes67-pcap}。必要なRTPペイロードサイズの計算式を式\ref{equ:rtp_payload}に示す。
 
 % \begin{itembox}[l]{RTPパケットペイロードサイズの計算式}
   % \label{equ:rtp_payload}
   % \caption{RTPパケットペイロードサイズの計算式}
-\begin{equation}
-  \label{equ:rtp_payload}
-  P = bsc
-\end{equation}
-\begin{itemize}
-  \item $P$: total payload bytes [byte]
-  \item $b$: bit depth [byte] (24bit: 3[bytes])
-  \item $s$: sampling rate [kHz] (48kHz: 48[kHz])
-  \item $c$: audio channels [channel] (Stereo channel: 2[channel])
-\end{itemize}
+\begin{itembox}[l]{RTPペイロードサイズの計算式}
+  \begin{equation}
+    \label{equ:rtp_payload}
+    P = bsc
+  \end{equation}
+  \begin{itemize}
+    \item $P$: total payload bytes [byte]
+    \item $b$: bit depth [byte] (24bit: 3[bytes])
+    \item $s$: sampling rate [kHz] (48kHz: 48[kHz])
+    \item $c$: audio channels [channel] (Stereo channel: 2[channel])
+  \end{itemize}
+\end{itembox}
 
 送信機能では、PCMで記録されたオーディオファイルを288バイトずつ取り出し、RTPペイロードに載せたものを伝送する。
 
