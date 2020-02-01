@@ -5,7 +5,7 @@
 
 \section{評価手法}
 
-\ref{chap:implementation}章で実装したAES67送受信アプリケーションを使用する。2台のPCでそれぞれ送信機能と受信機能を動かし、伝送にかかる遅延秒数を計測する。
+\ref{chap:implementation}章で実装したAES67送受信アプリケーションを使用する。2台のPCでそれぞれ送信機能と受信機能を動作させ、伝送にかかる遅延秒数を計測する。
 
 \section{評価環境}
 
@@ -18,7 +18,7 @@
   \caption{コンピュータ評価環境}
   \centering
   \begin{tabular}{c|l} \hline
-    OS & Windows 10 Pro バージョン 1909 \\ \hline
+    OS & Ubuntu 18.04 LTS \\ \hline
     CPU & Intel Core i7-9700K 3.60GHz \\ \hline
     RAM & 32GB \\ \hline
     SSD & Samsung SSD 970 EVO Plus 250GB \\ \hline
@@ -39,7 +39,7 @@
 
 \subsection{UDPパケット転送遅延}
 
-最小0.2ms、最大1.3msの遅延が発生した。
+最小91.125マイクロ秒、最大3490.794マイクロ秒、平均303.402マイクロ秒、中央値306.710マイクロ秒であった。
 
 \subsection{パケットドロップ率}
 
