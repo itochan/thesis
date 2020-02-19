@@ -5,20 +5,44 @@
 
 \section{評価手法}
 
-\ref{chap:implementation}章で実装したAES67送受信アプリケーションを使用する。2台のPCでそれぞれ送信機能と受信機能を動作させ、伝送にかかる遅延秒数を計測する。
+\ref{chap:implementation}章で実装したAES67送受信アプリケーションを使用する。2台のPCでそれぞれ送信機能と受信機能を動作させ、伝送にかかる遅延時間を計測する。
 
 \section{評価環境}
 
 次の構成のコンピュータを2台、ネットワークスイッチを介して接続する。
 
-今回使用するネットワークスイッチは、Dante最適設定が搭載されている。Dante最適設定は、有効にした状態で計測を行った。
+今回使用するネットワークスイッチは、Dante最適設定が搭載されている。使用機材のヤマハ SWR2311P-10Gのドキュメント\cite{yamaha-swr2311p-dante}によると、Dante最適設定では、安定したIPオーディオ伝送を行うための以下の設定がネットワークスイッチに書き込まれる。
+
+\begin{itemize}
+  \item システム全体
+  \begin{itemize}
+    \item フロー制御を無効
+    \item QoSを有効
+    \item DSCP値による送信キューの最適化
+  \end{itemize}
+  \item VLANインターフェース
+  \begin{itemize}
+    \item IGMPスヌーピングを有効
+    \item IGMPクエリー送信機能を有効
+    \item IGMPクエリー送信間隔の設定
+    \item IGMPパケットのTTL値検証機能を無効
+  \end{itemize}
+  \item LAN/SFPポート
+  \begin{itemize}
+    \item QoSトラストモードをDSCPに設定
+    \item フロー制御を無効
+    \item EEEを無効
+  \end{itemize}
+\end{itemize}
+
+Dante最適設定は、有効にした状態で計測を行った。
 
 \begin{table}[htb]
   \label{tab:evaluation_computer}
   \caption{コンピュータ評価環境}
   \centering
   \begin{tabular}{c|l} \hline
-    OS & Ubuntu 18.04 LTS \\ \hline
+    OS & Ubuntu 18.04 LTS (Linux 5.3.0-28-generic)\\ \hline
     CPU & Intel Core i7-9700K 3.60GHz \\ \hline
     RAM & 32GB \\ \hline
     SSD & Samsung SSD 970 EVO Plus 250GB \\ \hline
