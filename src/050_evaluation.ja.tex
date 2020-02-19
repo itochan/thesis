@@ -9,7 +9,14 @@
 
 \section{評価環境}
 
-次の構成のコンピュータを2台、ネットワークスイッチを介して接続する。
+コンピュータを2台、ネットワークスイッチを介して接続する。その構成を、それぞれ表\ref{tab:evaluation_computer}と表\ref{tab:evaluation_network}に示す。接続図\ref{fig:evaluation_environment}に示した。
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{img/evaluation_environment.pdf}
+  \caption{評価環境の接続図}
+  \label{fig:evaluation_environment}
+\end{figure}
 
 今回使用するネットワークスイッチは、Dante最適設定が搭載されている。使用機材のヤマハ SWR2311P-10Gのドキュメント\cite{yamaha-swr2311p-dante}によると、Dante最適設定では、安定したIPオーディオ伝送を行うための以下の設定がネットワークスイッチに書き込まれる。
 
@@ -35,11 +42,11 @@
   \end{itemize}
 \end{itemize}
 
-Dante最適設定は、有効にした状態で計測を行った。
+Dante最適設定を有効にした状態で計測を行った。
 
 \begin{table}[htb]
-  \label{tab:evaluation_computer}
   \caption{コンピュータ評価環境}
+  \label{tab:evaluation_computer}
   \centering
   \begin{tabular}{c|l} \hline
     OS & Ubuntu 18.04 LTS (Linux 5.3.0-28-generic)\\ \hline
@@ -51,8 +58,8 @@ Dante最適設定は、有効にした状態で計測を行った。
 \end{table}
 
 \begin{table}[htb]
-  \label{tab:evaluation_network}
   \caption{ネットワーク評価環境}
+  \label{tab:evaluation_network}
   \centering
   \begin{tabular}{c|l} \hline
     ネットワークスイッチ & YAMAHA SWR2311P-10G \\ \hline
@@ -61,15 +68,25 @@ Dante最適設定は、有効にした状態で計測を行った。
 
 \section{AES67伝送の結果}
 
-\subsection{UDPパケット転送遅延}
+\subsection{RTPストリームパケット送受信時間}
 
-最小91.125マイクロ秒、最大3490.794マイクロ秒、平均303.402マイクロ秒、中央値306.710マイクロ秒であった。
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{img/packets_graph.pdf}
+  \caption{AES67のRTPストリームパケット送受信時間}
+  \label{fig:packets_graph}
+\end{figure}
 
-\subsection{パケットドロップ率}
+RTPストリームパケット送受信にかかる時間は、最小91.125マイクロ秒、最大3490.794マイクロ秒、平均303.402マイクロ秒、中央値306.710マイクロ秒であった（小数点以下4桁を四捨五入）。
 
-パケットのドロップ率は、0\%だった。
+そのうち、1ミリ秒を超えるものは8回、2ミリ秒を超えるものは2回あった。
 
-\section{遅延の発生}
-\label{sec:evaluation_latency}
+\subsection{パケットロス率}
 
-実験に使用したアプリケーションでは、1ミリ秒間隔で1チャンネルあたり48サンプルずつ送信している。しかし、実験の結果から頻繁に1ミリ秒を超える間隔でパケットが送信され、受信したオーディオストリームを再生すると途中で音声が途切れる結果となった。
+パケットロス率は、0\%だった。
+
+\subsection{まとめ}
+
+本節で行った測定では、送受信にかかる時間を測定したため計測時間を2分の1にすることで簡易的に片道にかかる伝送時間を推測することができる。1ミリ秒を超えた回数は8回あったが、片道で1ミリ秒（往復2ミリ秒）以上になる回数は2回であった。よって、DanteにおけるAES67モードの遅延許容時間の1ミリ秒を99.99933\%（299998/300000）達成することができた。
+
+業務用オーディオでは完璧な伝送が求められるが、オーディオが数サンプル欠落する程度であれば受信側で知覚できないよう工夫することはできると考えられる。ソフトウェアによるIPオーディオ伝送は、ソフトウェア処理にかかる時間やネットワーク上に流れる他のパケットによる影響で遅延がゆらぐことは想定しておかなければならない。この実験で1ミリ秒以下での伝送を100\%に近いレートで行えたことは、ソフトウェアIPオーディオ伝送は業務用オーディオにおいて現実的なものであるという知見が得られた。
