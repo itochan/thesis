@@ -1,29 +1,142 @@
-\include{src/000_meta}
+\documentclass[12pt]{jreport}
+\usepackage{comment}
+\usepackage{./sty/eclepsf}
+\usepackage{tascmac}
+\usepackage{tabularx}
+\usepackage{listliketab}
+\usepackage[longnamesfirst]{natbib}
+\usepackage[dvipdfmx]{graphics}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx]{color}
+\usepackage{subfigure}
+\usepackage{alltt}
+\usepackage{here}
+\usepackage{afterpage}
+\usepackage{./sty/ncodeline}
+%\usepackage[dvipdfmx, colorlinks, breaklinks,%
+\usepackage[dvipdfmx, breaklinks,%
+bookmarks=true, bookmarksnumbered=true,%
+bookmarkstype=toc, bookmarksopen=true,bookmarksopenlevel=3,%
+pdftitle={RG},%
+]{hyperref}
+\usepackage{bookmark}
+
+\AtBeginDvi{\special{pdf:tounicode EUC-UCS2}}
+
+\usepackage{fancyhdr}
+
+\usepackage{./sty/doxygenorig}
+
+\usepackage{indentfirst}
+\usepackage{url}
+\usepackage{listings,./sty/jlisting}
+
+\def\lstlistingname{プログラム}
+
+\lstset{%
+ language={C++},
+ %backgroundcolor={\color[gray]{.85}},%
+ basicstyle={\small\ttfamily},%
+ identifierstyle={\small},%
+ commentstyle={\small\itshape},%
+ keywordstyle={\small\bfseries},%
+ ndkeywordstyle={\small\ttfamily},%
+ stringstyle={\small\ttfamily},
+ frame={tb},
+ framesep=1zw,
+ breaklines=true,
+ numbers=left,%
+ xrightmargin=0zw,%
+ xleftmargin=1.5zw,%
+ numberstyle={\scriptsize},%
+ stepnumber=1,
+ numbersep=1zw,%
+ lineskip=-0.5ex%
+}
+
+\usepackage{amssymb}
+%\usepackage{supertabular,multirow}
+
+\usepackage{array}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+
+% A4  size: 297mm*210mm %1pt = 0.35mm
+\setlength{\topmargin}{-3.4mm} % 10pt 25.4mm - 3.4mm = 22mm
+\setlength{\oddsidemargin}{-0.4mm} % 25.4mm - 0.4mm = 25mm
+\setlength{\evensidemargin}{-0.4mm} % 25.4mm - 0.4mm = 25mm
+\setlength{\textheight}{231mm} % 660pt % original is 225.75mm 645pt
+\setlength{\textwidth}{160mm} % 457pt
+
+\renewcommand{\topfraction}{.99}
+\renewcommand{\textfraction}{.0}
+\renewcommand{\floatpagefraction}{.99}
+\renewcommand{\bibname}{参考文献}
+
+
+\pagestyle{fancy}
+\lhead[]{}
+
+\makeatletter
+\def\chaptermark#1{\markboth {\ifnum \c@secnumdepth>\m@ne
+\@chapapp\ \thechapter \@chappos\ \fi #1}{}}
+\makeatother
+
+% タイトル
+\def\title{業務用オーディオシステムにおける\\AES67アプリケーションの実装と検証}
+% 英語タイトル
+\def\etitle{Implementation and Evaluation of AES67 sender and receiver}
+% 著者(日本語)
+\def\author{城 一統}
+% 著者(英語)
+\def\eauthor{Kazunori Jo}
+% 学部・研究科
+\def\dept{慶應義塾大学 環境情報学部}
+% 学部・研究科(英語)
+\def\edept{Keio University Bachelor of Arts in Environment and Information Studies}
 
 \begin{document}
 
-\ifjapanese
-  \jmaketitle
-\else
-  \emaketitle
-\fi
+\pagenumbering{roman}
+\input{src/titlepage}
+\thispagestyle{empty}
 
-\include{src/001_abstract.ja}
-\include{src/002_abstract.en}
 
-\tableofcontents
-\listoffigures
-\listoftables
+\input{src/abstract_japanese}
+\thispagestyle{plain}
+\clearpage
+
+\input{src/abstract_english}
+\thispagestyle{plain}
+\clearpage
+
+\tableofcontents\thispagestyle{plain} %目次
+\clearpage
+\listoffigures\thispagestyle{plain} %図目次
+\clearpage
+\listoftables\thispagestyle{plain} %表目次
+\clearpage
 
 \pagenumbering{arabic}
+\input{src/010_introduction.ja}
+\input{src/020_related_works.ja}
+\input{src/030_design.ja}
+\input{src/040_implementation.ja}
+\input{src/050_evaluation.ja}
+\input{src/060_conclusion.ja}
+%\input{src/appendix}
+\input{src/900_acknowledgement.ja}
 
-\include{src/010_introduction.ja}
-\include{src/020_related_works.ja}
-\include{src/030_design.ja}
-\include{src/040_implementation.ja}
-\include{src/050_evaluation.ja}
-\include{src/060_conclusion.ja}
-\include{src/900_acknowledgement.ja}
-\include{src/910_bibliography.ja}
+\renewcommand{\thechapter}{\Alph{chapter}}
+\setcounter{chapter}{0}
+\vspace{-5mm}
+
+
+\input{bib/biblio}\thispagestyle{plain}%bibtex
+
 
 \end{document}
+
+%%% Local Variables:
+%%% mode: japanese-latex
+%%% TeX-master: t
+%%% End:
